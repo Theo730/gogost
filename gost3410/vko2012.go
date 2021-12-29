@@ -18,8 +18,8 @@ package gost3410
 import (
 	"math/big"
 
-	"go.cypherpunks.ru/gogost/v5/gost34112012256"
-	"go.cypherpunks.ru/gogost/v5/gost34112012512"
+	"github.com/Theo730/gogost/gost34112012256"
+	"github.com/Theo730/gogost/gost34112012512"
 )
 
 // RFC 7836 VKO GOST R 34.10-2012 256-bit key agreement function.
