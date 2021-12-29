@@ -23,7 +23,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/Theo730/gogost/"
+	"github.com/Theo730/gogost"
 	"github.com/Theo730/gogost/gost34112012256"
 )
 
