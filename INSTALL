@@ -1,0 +1,105 @@
+Download
+********
+
+Preferable way is to download tarball with the signature from website
+and, for example, run tests with benchmarks:
+
+     $ [fetch|wget] http://www.gogost.cypherpunks.ru/gogost-5.9.0.tar.zst
+     $ [fetch|wget] http://www.gogost.cypherpunks.ru/gogost-5.9.0.tar.zst.sig
+     $ gpg --verify gogost-5.9.0.tar.zst.sig gogost-5.9.0.tar.zst
+     $ zstd --decompress --stdout gogost-5.9.0.tar.zst | tar xf -
+     $ cd gogost-5.9.0
+     $ redo all
+     $ echo hello world | ./streebog256
+     f72018189a5cfb803dbe1f2149cf554c40093d8e7f81c21e08ac5bcd09d9934d
+
+   It uses redo (http://cr.yp.to/redo.html) build system for that
+examples.  You can use either dozen of various implementations, or at
+least minimalistic POSIX shell "contrib/do" (just replace "redo" with
+"contrib/do" in the example above) included in tarball.
+
+   You can obtain releases source code prepared tarballs on
+<http://www.gogost.cypherpunks.ru/>.
+
+   And then you can include its source code in your project for example
+like this:
+
+     $ mkdir -p myproj/vendor/go.cypherpunks.ru/gogost
+     $ mv gogost-5.9.0 myproj/vendor/go.cypherpunks.ru/gogost/v5
+     $ cd myproj
+     $ cat > main.go <<EOF
+     package main
+
+     import (
+         "encoding/hex"
+         "fmt"
+
+         "go.cypherpunks.ru/gogost/v5/gost34112012256"
+     )
+
+     func main() {
+         h := gost34112012256.New()
+         h.Write([]byte("hello world\n"))
+         fmt.Println(hex.EncodeToString(h.Sum(nil)))
+     }
+     EOF
+     $ go run main.go
+     f72018189a5cfb803dbe1f2149cf554c40093d8e7f81c21e08ac5bcd09d9934d
+
+   You *have to* verify downloaded tarballs integrity and authenticity
+to be sure that you retrieved trusted and untampered software.  GNU
+Privacy Guard (https://www.gnupg.org/) is used for that purpose.
+
+   For the very first time it is necessary to get signing public key and
+import it.  It is provided below, but you should check alternative
+resources.
+
+pub   rsa2048/0x82343436696FC85A 2016-09-13 [SC]
+      CEBD 1282 2C46 9C02 A81A  0467 8234 3436 696F C85A
+uid   GoGOST releases <gogost at cypherpunks dot ru>
+
+   • gost (http://lists.cypherpunks.ru/gost.html) maillist
+
+   •      $ gpg --auto-key-locate dane --locate-keys gogost at cypherpunks dot ru
+          $ gpg --auto-key-locate wkd --locate-keys gogost at cypherpunks dot ru
+
+   • -----BEGIN PGP PUBLIC KEY BLOCK-----
+     
+     mQENBFfXoXsBCADKKxVI2GjDU5f3L2Y2m9oz089viCwVkD0plf3Bo8yaAnyxp/an
+     EjTYQnfE2QQxbixKz2A+z/mfrFrJld3zM/rmu0WJxmEBb7J59j8uKa8DblxJuYJh
+     rWWhwzm8FSC2bITzF0dFSSXSF9xcM8CoRJOBeOzpVNPopKxXW94MgHw/xlXvjASn
+     cbLDKM2eFYXnWMRZsnrfVs87r8OoHxzDCWZ16/CjB5qspn5Yf7c/sXE2C5EIMJce
+     biiXcLTPxKG5B5Tncmsh9HA0CquGciftm34bJxTJSPkw/0B3ROyY7yadlud7XjLI
+     Ak2AP3y0AHgI4q4Q9YzPeotryG91hj6lii8jABEBAAG0J0dvR09TVCByZWxlYXNl
+     cyA8Z29nb3N0QGN5cGhlcnB1bmtzLnJ1PokBQAQTAQgAKgUCV9ehewIbAwwLCgkN
+     CAwHCwMEAQIHFQoJCAsDAgUWAgEDAAIeAQIXgAAKCRCCNDQ2aW/IWibQCADF59c2
+     aKHVEqqm6tnyu0CFKuVWAikoss3DB8A3Vp1kLxOOoXcnSDMM1v+C6oGU7TDcobZ9
+     zH2XZpnfj9MEZ5jypb2z+QlkPN7cJBOGvSJ8XpTt8E8/heyD40KS61VBNXgN3BZL
+     owKBcppwthSVRntjexHzn7ha4HE8j8ysypMBtsw7x+3iKZD4roHrYdp4ddOoZT1s
+     xLsNmmbUzln2ieCD/mMb8taVpFJhuAWH2o6HJTh31b/+T0AN3QL999AQcR93jF2U
+     o6/MJ0m3TzXHvUTnIOXCU7xlG464+6+rRACBbRlO3wa0WSdSeQSFIy1ienYxj63W
+     iXmU5IA05VS613JaiF4EEBEIAAYFAlfXoZcACgkQrhqBCeSYV+/Y1AD9Eg0+OMLb
+     8ygnl+v8XUQqsf7fCcELW3oadFMu0RhcDNQA/20GNbS0omsycQkqmxYMQLkWa5wx
+     4kzapQYmseDye0zy
+     =sx2q
+     -----END PGP PUBLIC KEY BLOCK-----
+
+   GoGOST is also "go get"-able.  For example to use "streebog256"
+utility:
+
+     $ go get go.cypherpunks.ru/gogost/cmd/streebog256
+
+   If you have problems with "*.golang.org"’s inability to verify
+authenticity of "go.cypherpunks.ru" TLS connection, then you can disable
+their usage by setting "GOPRIVATE=go.cypherpunks.ru".  You can override
+CA certificate file path with "SSL_CERT_FILE" and "GIT_SSL_CAINFO"
+environment variables.
+
+   Also you can use "replace" feature inside your "go.mod", like:
+
+     require go.cypherpunks.ru/gogost/v5 v5.9.0
+     replace go.cypherpunks.ru/gogost/v5 => /path/to/gogost-5.9.0
+
+   You can obtain development source code with "git clone
+git://git.cypherpunks.ru/gogost.git" (also you can use
+<https://git.cypherpunks.ru/gogost.git>).

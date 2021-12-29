@@ -1,0 +1,25 @@
+Frequently asked questions
+**************************
+
+My signature is not validated by other implementations. What is wrong?
+
+     Try to reverse it (like "sign[::-1]" in Python).  Try to swap its
+     halves ("sign[len(sign)/2:] + sign[:len(sign)/2]").  Try to reverse
+     its swapped halves too.
+
+     It is GOST: do you expect serialization unification?!
+
+My signature is *still* not validated by other implementations!
+
+     Try to reverse digest you are signing/verifying (like "dgst[::-1]"
+     in Python).
+
+     It is GOST: do you expect serialization unification?!
+
+Everything above did not help me. Does GoGOST sucks?
+
+     No way!  You still have not tried to reverse your binary private
+     key, public key and swap its halves.
+
+     It is GOST: do you expect serialization unification?!
+
