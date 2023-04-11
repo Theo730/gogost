@@ -4,19 +4,19 @@ Download
 Preferable way is to download tarball with the signature from website
 and, for example, run tests with benchmarks:
 
-     $ [fetch|wget] http://www.gogost.cypherpunks.ru/gogost-5.9.0.tar.zst
-     $ [fetch|wget] http://www.gogost.cypherpunks.ru/gogost-5.9.0.tar.zst.sig
-     $ gpg --verify gogost-5.9.0.tar.zst.sig gogost-5.9.0.tar.zst
-     $ zstd --decompress --stdout gogost-5.9.0.tar.zst | tar xf -
-     $ cd gogost-5.9.0
+     $ [fetch|wget] http://www.gogost.cypherpunks.ru/gogost-5.10.0.tar.zst
+     $ [fetch|wget] http://www.gogost.cypherpunks.ru/gogost-5.10.0.tar.zst.sig
+     $ gpg --verify gogost-5.10.0.tar.zst.sig gogost-5.10.0.tar.zst
+     $ zstd --decompress --stdout gogost-5.10.0.tar.zst | tar xf -
+     $ cd gogost-5.10.0
      $ redo all
      $ echo hello world | ./streebog256
      f72018189a5cfb803dbe1f2149cf554c40093d8e7f81c21e08ac5bcd09d9934d
 
    It uses redo (http://cr.yp.to/redo.html) build system for that
 examples.  You can use either dozen of various implementations, or at
-least minimalistic POSIX shell "contrib/do" (just replace "redo" with
-"contrib/do" in the example above) included in tarball.
+least minimalistic POSIX shell 'contrib/do' (just replace 'redo' with
+'contrib/do' in the example above) included in tarball.
 
    You can obtain releases source code prepared tarballs on
 <http://www.gogost.cypherpunks.ru/>.
@@ -25,7 +25,7 @@ least minimalistic POSIX shell "contrib/do" (just replace "redo" with
 like this:
 
      $ mkdir -p myproj/vendor/go.cypherpunks.ru/gogost
-     $ mv gogost-5.9.0 myproj/vendor/go.cypherpunks.ru/gogost/v5
+     $ mv gogost-5.10.0 myproj/vendor/go.cypherpunks.ru/gogost/v5
      $ cd myproj
      $ cat > main.go <<EOF
      package main
@@ -58,12 +58,12 @@ pub   rsa2048/0x82343436696FC85A 2016-09-13 [SC]
       CEBD 1282 2C46 9C02 A81A  0467 8234 3436 696F C85A
 uid   GoGOST releases <gogost at cypherpunks dot ru>
 
-   • gost (http://lists.cypherpunks.ru/gost.html) maillist
+   * gost (http://lists.cypherpunks.ru/gost.html) maillist
 
-   •      $ gpg --auto-key-locate dane --locate-keys gogost at cypherpunks dot ru
-          $ gpg --auto-key-locate wkd --locate-keys gogost at cypherpunks dot ru
+   *      $ gpg --auto-key-locate dane --locate-keys gogost at cypherpunks dot ru
+          $ gpg --auto-key-locate  wkd --locate-keys gogost at cypherpunks dot ru
 
-   • -----BEGIN PGP PUBLIC KEY BLOCK-----
+   * -----BEGIN PGP PUBLIC KEY BLOCK-----
      
      mQENBFfXoXsBCADKKxVI2GjDU5f3L2Y2m9oz089viCwVkD0plf3Bo8yaAnyxp/an
      EjTYQnfE2QQxbixKz2A+z/mfrFrJld3zM/rmu0WJxmEBb7J59j8uKa8DblxJuYJh
@@ -80,26 +80,42 @@ uid   GoGOST releases <gogost at cypherpunks dot ru>
      o6/MJ0m3TzXHvUTnIOXCU7xlG464+6+rRACBbRlO3wa0WSdSeQSFIy1ienYxj63W
      iXmU5IA05VS613JaiF4EEBEIAAYFAlfXoZcACgkQrhqBCeSYV+/Y1AD9Eg0+OMLb
      8ygnl+v8XUQqsf7fCcELW3oadFMu0RhcDNQA/20GNbS0omsycQkqmxYMQLkWa5wx
-     4kzapQYmseDye0zy
-     =sx2q
+     4kzapQYmseDye0zyiHUEEBYKAB0WIQQSrTJonGYNQmln/XXLggVjIQetigUCYuo6
+     rwAKCRDLggVjIQetirjSAP9kFrGmkKvNdFAcLQiKTq5LBG0vNxB7Heb6+Z3ijRA8
+     uwEA1xYxoygWs+3wmMsaFSG8/Vln9FLKVYsqrf01/tYLOAs=
+     =kqIu
      -----END PGP PUBLIC KEY BLOCK-----
 
-   GoGOST is also "go get"-able.  For example to use "streebog256"
+   GoGOST is also 'go get'-able.  For example to install 'streebog256'
 utility:
 
-     $ go get go.cypherpunks.ru/gogost/cmd/streebog256
+     $ go install go.cypherpunks.ru/gogost/v5/cmd/streebog256@latest
 
-   If you have problems with "*.golang.org"’s inability to verify
-authenticity of "go.cypherpunks.ru" TLS connection, then you can disable
-their usage by setting "GOPRIVATE=go.cypherpunks.ru".  You can override
-CA certificate file path with "SSL_CERT_FILE" and "GIT_SSL_CAINFO"
-environment variables.
+   'go.cypherpunks.ru' uses 'ca.cypherpunks.ru' X.509 CA authority, that
+may complicate installation:
 
-   Also you can use "replace" feature inside your "go.mod", like:
+   * Go's default 'proxy.golang.org' and 'sum.golang.org' services won't
+     be able to verify 'go.cypherpunks.ru''s TLS authenticity, because
+     there are no common trust anchors.  You can skip their usage by
+     setting '$GOPRIVATE=go.cypherpunks.ru'.
 
-     require go.cypherpunks.ru/gogost/v5 v5.9.0
-     replace go.cypherpunks.ru/gogost/v5 => /path/to/gogost-5.9.0
+   * You can (temporarily) override CA certificate bundle during
+     installation:
 
-   You can obtain development source code with "git clone
-git://git.cypherpunks.ru/gogost.git" (also you can use
+          $ [fetch|wget] http://www.ca.cypherpunks.ru/cert.pem
+          $ [fetch|wget] http://www.ca.cypherpunks.ru/cert.pem.asc
+          $ gpg --auto-key-locate dane --locate-keys stargrave at stargrave dot org
+          $ gpg --auto-key-locate  wkd --locate-keys stargrave at gnupg dot net
+          $ gpg --verify cert.pem.asc
+          $ SSL_CERT_FILE=`pwd`/cert.pem GIT_SSL_CAINFO=`pwd`/cert.pem go get \
+              go.cypherpunks.ru/gogost/v5
+
+   * You can unpack tarball somewhere and use 'replace' command in your
+     local 'go.mod':
+
+          require go.cypherpunks.ru/gogost/v5 v5.10.0
+          replace go.cypherpunks.ru/gogost/v5 => /path/to/gogost-5.10.0
+
+   You can obtain development source code with 'git clone
+git://git.cypherpunks.ru/gogost.git' (also you can use
 <https://git.cypherpunks.ru/gogost.git>).

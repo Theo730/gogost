@@ -1,5 +1,5 @@
 // GoGOST -- Pure Go GOST cryptographic functions library
-// Copyright (C) 2015-2021 Sergey Matveev <stargrave@stargrave.org>
+// Copyright (C) 2015-2023 Sergey Matveev <stargrave@stargrave.org>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -88,8 +88,10 @@ func NewCurve(p, q, a, b, x, y, e, d, co *big.Int) (*Curve, error) {
 	return &c, nil
 }
 
+// Get the size of the point's coordinate in bytes.
+// 32 for 256-bit curves, 64 for 512-bit ones.
 func (c *Curve) PointSize() int {
-	return PointSize(c.P)
+	return pointSize(c.P)
 }
 
 func (c *Curve) pos(v *big.Int) {
@@ -163,4 +165,8 @@ func (our *Curve) Equal(their *Curve) bool {
 		((our.E == nil && their.E == nil) || our.E.Cmp(their.E) == 0) &&
 		((our.D == nil && their.D == nil) || our.D.Cmp(their.D) == 0) &&
 		our.Co.Cmp(their.Co) == 0
+}
+
+func (c *Curve) String() string {
+	return c.Name
 }

@@ -1,5 +1,5 @@
 // GoGOST -- Pure Go GOST cryptographic functions library
-// Copyright (C) 2015-2021 Sergey Matveev <stargrave@stargrave.org>
+// Copyright (C) 2015-2023 Sergey Matveev <stargrave@stargrave.org>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -28,10 +28,11 @@ type PrivateKey struct {
 	Key *big.Int
 }
 
+// Unmarshal little-endian private key. "raw" must be c.PointSize() length.
 func NewPrivateKey(c *Curve, raw []byte) (*PrivateKey, error) {
 	pointSize := c.PointSize()
 	if len(raw) != pointSize {
-		return nil, fmt.Errorf("gogost/gost3410: len(key) != %d", pointSize)
+		return nil, fmt.Errorf("gogost/gost3410: len(key)=%d != %d", len(raw), pointSize)
 	}
 	key := make([]byte, pointSize)
 	for i := 0; i < len(key); i++ {
@@ -47,13 +48,14 @@ func NewPrivateKey(c *Curve, raw []byte) (*PrivateKey, error) {
 func GenPrivateKey(c *Curve, rand io.Reader) (*PrivateKey, error) {
 	raw := make([]byte, c.PointSize())
 	if _, err := io.ReadFull(rand, raw); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("gogost/gost3410.GenPrivateKey: %w", err)
 	}
 	return NewPrivateKey(c, raw)
 }
 
-func (prv *PrivateKey) Raw() []byte {
-	raw := pad(prv.Key.Bytes(), prv.C.PointSize())
+// Marshal little-endian private key. raw will be prv.C.PointSize() length.
+func (prv *PrivateKey) Raw() (raw []byte) {
+	raw = pad(prv.Key.Bytes(), prv.C.PointSize())
 	reverse(raw)
 	return raw
 }
@@ -61,7 +63,7 @@ func (prv *PrivateKey) Raw() []byte {
 func (prv *PrivateKey) PublicKey() (*PublicKey, error) {
 	x, y, err := prv.C.Exp(prv.Key, prv.C.X, prv.C.Y)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("gogost/gost3410.PrivateKey.PublicKey: %w", err)
 	}
 	return &PublicKey{prv.C, x, y}, nil
 }
@@ -80,7 +82,7 @@ func (prv *PrivateKey) SignDigest(digest []byte, rand io.Reader) ([]byte, error)
 	s := big.NewInt(0)
 Retry:
 	if _, err = io.ReadFull(rand, kRaw); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("gogost/gost3410.PrivateKey.SignDigest: %w", err)
 	}
 	k = bytes2big(kRaw)
 	k.Mod(k, prv.C.Q)
@@ -89,7 +91,7 @@ Retry:
 	}
 	r, _, err = prv.C.Exp(k, prv.C.X, prv.C.Y)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("gogost/gost3410.PrivateKey.SignDigest: %w", err)
 	}
 	r.Mod(r, prv.C.Q)
 	if r.Cmp(zero) == 0 {
@@ -109,6 +111,7 @@ Retry:
 	), nil
 }
 
+// Sign the digest. opts argument is unused.
 func (prv *PrivateKey) Sign(rand io.Reader, digest []byte, opts crypto.SignerOpts) ([]byte, error) {
 	return prv.SignDigest(digest, rand)
 }

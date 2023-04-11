@@ -1,0 +1,4 @@
+# golang.org/x/crypto v0.6.0
+## explicit; go 1.17
+golang.org/x/crypto/hkdf
+golang.org/x/crypto/pbkdf2

@@ -1,5 +1,5 @@
 // GoGOST -- Pure Go GOST cryptographic functions library
-// Copyright (C) 2015-2021 Sergey Matveev <stargrave@stargrave.org>
+// Copyright (C) 2015-2023 Sergey Matveev <stargrave@stargrave.org>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -67,10 +67,10 @@ func TestRFCVectors(t *testing.T) {
 	if err != nil {
 		t.FailNow()
 	}
-	if bytes.Compare(pub.Raw()[:32], pubX) != 0 {
+	if !bytes.Equal(pub.Raw()[:32], pubX) {
 		t.FailNow()
 	}
-	if bytes.Compare(pub.Raw()[32:], pubY) != 0 {
+	if !bytes.Equal(pub.Raw()[32:], pubY) {
 		t.FailNow()
 	}
 	ourSign, err := prv.SignDigest(digest, rand.Reader)

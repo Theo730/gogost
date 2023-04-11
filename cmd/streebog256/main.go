@@ -1,5 +1,5 @@
 // GoGOST -- Pure Go GOST cryptographic functions library
-// Copyright (C) 2015-2021 Sergey Matveev <stargrave@stargrave.org>
+// Copyright (C) 2015-2023 Sergey Matveev <stargrave@stargrave.org>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/Theo730/gogost"
-	"github.com/Theo730/gogost/gost34112012256"
+	"go.cypherpunks.ru/gogost/v5"
+	"go.cypherpunks.ru/gogost/v5/gost34112012256"
 )
 
 var (

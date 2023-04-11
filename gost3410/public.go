@@ -1,5 +1,5 @@
 // GoGOST -- Pure Go GOST cryptographic functions library
-// Copyright (C) 2015-2021 Sergey Matveev <stargrave@stargrave.org>
+// Copyright (C) 2015-2023 Sergey Matveev <stargrave@stargrave.org>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ type PublicKey struct {
 	Y *big.Int
 }
 
+// Unmarshal LE(X)||LE(Y) public key. "raw" must be 2*c.PointSize() length.
 func NewPublicKey(c *Curve, raw []byte) (*PublicKey, error) {
 	pointSize := c.PointSize()
 	key := make([]byte, 2*pointSize)
@@ -43,9 +44,10 @@ func NewPublicKey(c *Curve, raw []byte) (*PublicKey, error) {
 	}, nil
 }
 
-func (pub *PublicKey) Raw() []byte {
+// Marshal LE(X)||LE(Y) public key. raw will be 2*pub.C.PointSize() length.
+func (pub *PublicKey) Raw() (raw []byte) {
 	pointSize := pub.C.PointSize()
-	raw := append(
+	raw = append(
 		pad(pub.Y.Bytes(), pointSize),
 		pad(pub.X.Bytes(), pointSize)...,
 	)
@@ -56,7 +58,7 @@ func (pub *PublicKey) Raw() []byte {
 func (pub *PublicKey) VerifyDigest(digest, signature []byte) (bool, error) {
 	pointSize := pub.C.PointSize()
 	if len(signature) != 2*pointSize {
-		return false, fmt.Errorf("gogost/gost3410: len(signature) != %d", 2*pointSize)
+		return false, fmt.Errorf("gogost/gost3410: len(signature)=%d != %d", len(signature), 2*pointSize)
 	}
 	s := bytes2big(signature[:pointSize])
 	r := bytes2big(signature[pointSize:])

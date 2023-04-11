@@ -1,5 +1,5 @@
 // GoGOST -- Pure Go GOST cryptographic functions library
-// Copyright (C) 2015-2021 Sergey Matveev <stargrave@stargrave.org>
+// Copyright (C) 2015-2023 Sergey Matveev <stargrave@stargrave.org>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ func TestStdVector1(t *testing.T) {
 	if err != nil {
 		t.FailNow()
 	}
-	if bytes.Compare(sign, append(s, r...)) != 0 {
+	if !bytes.Equal(sign, append(s, r...)) {
 		t.FailNow()
 	}
 }
@@ -190,7 +190,7 @@ func TestStdVector2(t *testing.T) {
 	if err != nil {
 		t.FailNow()
 	}
-	if bytes.Compare(sign, append(s, r...)) != 0 {
+	if !bytes.Equal(sign, append(s, r...)) {
 		t.FailNow()
 	}
 }
@@ -336,10 +336,10 @@ func TestGCL3Vectors(t *testing.T) {
 	if err != nil {
 		t.FailNow()
 	}
-	if bytes.Compare(pub.Raw()[:64], pubX) != 0 {
+	if !bytes.Equal(pub.Raw()[:64], pubX) {
 		t.FailNow()
 	}
-	if bytes.Compare(pub.Raw()[64:], pubY) != 0 {
+	if !bytes.Equal(pub.Raw()[64:], pubY) {
 		t.FailNow()
 	}
 	ourSign, err := prv.SignDigest(digest, rand.Reader)
@@ -516,35 +516,41 @@ func TestSESPAKE(t *testing.T) {
 			t.FailNow()
 		}
 		raw, _ = hex.DecodeString(vector.xExpected)
-		if bytes.Compare(x.Bytes(), raw) != 0 {
+		if !bytes.Equal(x.Bytes(), raw) {
 			t.FailNow()
 		}
 		raw, _ = hex.DecodeString(vector.yExpected)
-		if bytes.Compare(y.Bytes(), raw) != 0 {
+		if !bytes.Equal(y.Bytes(), raw) {
 			t.FailNow()
 		}
 
 		raw, _ = hex.DecodeString(vector.alpha)
 		alpha := bytes2big(raw)
 		x, y, err = vector.curve.Exp(alpha, vector.curve.X, vector.curve.Y)
+		if err != nil {
+			t.FailNow()
+		}
 		raw, _ = hex.DecodeString(vector.xAlphaExpected)
-		if bytes.Compare(x.Bytes(), raw) != 0 {
+		if !bytes.Equal(x.Bytes(), raw) {
 			t.FailNow()
 		}
 		raw, _ = hex.DecodeString(vector.yAlphaExpected)
-		if bytes.Compare(y.Bytes(), raw) != 0 {
+		if !bytes.Equal(y.Bytes(), raw) {
 			t.FailNow()
 		}
 
 		raw, _ = hex.DecodeString(vector.beta)
 		beta := bytes2big(raw)
 		x, y, err = vector.curve.Exp(beta, vector.curve.X, vector.curve.Y)
+		if err != nil {
+			t.FailNow()
+		}
 		raw, _ = hex.DecodeString(vector.xBetaExpected)
-		if bytes.Compare(x.Bytes(), raw) != 0 {
+		if !bytes.Equal(x.Bytes(), raw) {
 			t.FailNow()
 		}
 		raw, _ = hex.DecodeString(vector.yBetaExpected)
-		if bytes.Compare(y.Bytes(), raw) != 0 {
+		if !bytes.Equal(y.Bytes(), raw) {
 			t.FailNow()
 		}
 	}

@@ -1,6 +1,6 @@
 # Pure Go GOST cryptographic functions library.
 
-## GOGOST v 5.9
+## GOGOST v 5.10
 Fork of the library GoGost. The fork was made due to a crash in panic of services under heavy load based on version 5.8 of the library.
 
 ### GOST is GOvernment STandard of Russian Federation (and Soviet Union).
